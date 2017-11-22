@@ -29,6 +29,25 @@ namespace MyDurak
 
         public int turn;
 
+        public void RefreshLabels()
+        {
+            table.Text = "Table:";
+            myCards.Text = "My cards:";
+            enemyCard.Text = "Enemy cards:";
+            giveDeck.Text = "Current deck:";
+            cardCount.Text = "Card in deck count:";
+            for (int i = 0; i < tableCards.Count; i++)
+                table.Text = table.Text + " " + tableCards[i];
+            for (int i = 0; i < playerCards.Count; i++)
+                myCards.Text = myCards.Text + " " + playerCards[i];
+            for (int i = 0; i < computerCards.Count; i++)
+                enemyCard.Text = enemyCard.Text + " " + computerCards[i];
+            for (int i = 0; i < deckList.Count; i++)
+                giveDeck.Text = giveDeck.Text + " " + deckList[i];
+            cardCount.Text = cardCount.Text + " " + deckList.Count;
+            turnlbl.Text = turnlbl.Text + " " + turn;
+        }
+
         public void DeckListInit()
         {
             void ClearLabels()
@@ -39,6 +58,7 @@ namespace MyDurak
                 giveDeck.Text = "Current deck:";
                 defDeck.Text = "Default deck:";
                 trumpLbl.Text = "Trump:";
+                turnlbl.Text = "Turn:";
             }
             deckList.Clear();
             computerCards.Clear();
@@ -82,24 +102,29 @@ namespace MyDurak
             var newTrump = new Random();
             trump = newTrump.Next(0, 3);
             var newTurn = new Random();
-            turn = newTurn.Next(0, 1);
+            turn = 0;
+            trumpLbl.Text = trumpLbl.Text + " " + trump;
+            for (int i = 0; i < deckList.Count; i++)
+                defDeck.Text = defDeck.Text + " " + deckList[i];
+            GiveCard();
+            RefreshLabels();
         }
 
         public void GiveCard()
         {
             while ((playerCards.Count < 6) && (deckList.Count > 0))
             {
-                    playerCards.Add(deckList[deckList.Count - 1]);
-                    deckList.RemoveAt(deckList.Count - 1);
+                playerCards.Add(deckList[deckList.Count - 1]);
+                deckList.RemoveAt(deckList.Count - 1);
             }
             while ((computerCards.Count < 6) && (deckList.Count > 0))
             {
-                    computerCards.Add(deckList[deckList.Count - 1]);
-                    deckList.RemoveAt(deckList.Count - 1);
+                computerCards.Add(deckList[deckList.Count - 1]);
+                deckList.RemoveAt(deckList.Count - 1);
             }
         }
 
-        public int ComputerLogic(int player)
+        public int ComputerLogic()
         {
             int Attack()
             {
@@ -108,7 +133,7 @@ namespace MyDurak
                 {
                     for (int i = 1; i < computerCards.Count; i++) // в этом цикле определяется минимальная карта в руке компьютера
                     {
-                        
+
                         if (((computerCards[i] / 10) < (minCard / 10)) && ((computerCards[i] % 10) != trump))
                         {
                             minCard = computerCards[i];
@@ -117,6 +142,7 @@ namespace MyDurak
                     table.Text = table.Text + minCard.ToString();
                     tableCards.Add(minCard);
                     computerCards.Remove(minCard);
+                    RefreshLabels();
                     return 0;
                 }
                 else // выбираются катры для подкидывания
@@ -130,10 +156,13 @@ namespace MyDurak
                                 table.Text = table.Text + computerCards[j].ToString();
                                 tableCards.Add(computerCards[j]);
                                 computerCards.Remove(computerCards[j]);
+                                RefreshLabels();
                                 return 0;
                             }
                         }
                     }
+                    RefreshLabels();
+                    turn = 0;
                     return 1;
                 }
             }
@@ -141,9 +170,9 @@ namespace MyDurak
             int Defense()
             {
                 int minCard = 99;
-                if ((tableCards[tableCards.Count - 1] % 10) != trump)
+                if ((tableCards[tableCards.Count - 1] % 10) != trump) // если ИИ надо отбиваться от некозырной карты
                 {
-                    for (int i = 0; i < computerCards.Count; i++)
+                    for (int i = 0; i < computerCards.Count; i++) // ИИ ищет катры среди некозырных
                     {
                         if (((computerCards[i] / 10) > (tableCards[tableCards.Count - 1] / 10)) &&
                             ((computerCards[i] % 10) == (tableCards[tableCards.Count - 1] % 10)))
@@ -151,20 +180,21 @@ namespace MyDurak
                             minCard = computerCards[i];
                         }
                     }
-                    if (minCard == 99)
+                    if (minCard == 99) // если не нашел, то
                     {
-                        for (int i = 0; i < computerCards.Count; i++)
+                        for (int i = 0; i < computerCards.Count; i++) // ищет среди козырных
                         {
-                            if (((computerCards[i] % 10) == trump) && ((computerCards[i] / 10) < minCard))
+                            if (((computerCards[i] % 10) == trump) &&
+                                ((computerCards[i] / 10) < minCard))
                             {
                                 minCard = computerCards[i];
                             }
                         }
                     }
                 }
-                else
+                else // если ИИ надо отбиться от козырной карты
                 {
-                    for (int i = 0; i < computerCards.Count; i++)
+                    for (int i = 0; i < computerCards.Count; i++) // ИИ ищет подходящий козырь
                     {
                         if (((computerCards[i] / 10) > (tableCards[tableCards.Count - 1] / 10)) &&
                             ((computerCards[i] % 10) == trump))
@@ -173,15 +203,21 @@ namespace MyDurak
                         }
                     }
                 }
-                if (minCard != 99)
+                if (minCard != 99) // если ИИ нашел подходящую карту
                 {
                     tableCards.Add(minCard);
                     table.Text = table.Text + " " + minCard.ToString();
                     computerCards.Remove(minCard);
+                    RefreshLabels();
                     return 0;
                 }
-                else
+                else // если не нашел
                 {
+                    computerCards.AddRange(tableCards);
+                    tableCards.Clear();
+                    GiveCard();
+                    RefreshLabels();
+                    MessageBox.Show("Бот: беру :(");
                     return 1;
                 }
             }
@@ -192,55 +228,21 @@ namespace MyDurak
                 return Attack();
         }
 
-        public void GameProcess()
+        public void WinnerCheck()
         {
-            trumpLbl.Text = trumpLbl.Text + " " + trump.ToString();
-            int i = 0;
-            while (i < deckList.Count)
+            if (deckList.Count == 0)
             {
-                defDeck.Text = defDeck.Text + " " + deckList[i];
-                i++;
-            }
-            GiveCard(); // раздача карт в начале игры 
-            if ((deckList.Count != 0) && ((playerCards.Count != 0) || (computerCards.Count != 0)))
-            {
-                GiveCard(); // раздача карт по ходу игры 
-                cardCount.Text = "Cards in deck count: " + deckList.Count.ToString();
-                i = 0;
-                while (i < deckList.Count)
+                if (playerCards.Count == 0)
                 {
-                    giveDeck.Text = giveDeck.Text + " " + deckList[i];
-                    i++;
+                    MessageBox.Show("You win! Congratulation.");
                 }
-                for (int j = 0; j < 6; j++)
+                if (computerCards.Count == 0)
                 {
-                    myCards.Text = myCards.Text + " " + playerCards[j].ToString();
-                    enemyCard.Text = enemyCard.Text + " " + computerCards[j].ToString();
-                }
-                turn = 1;
-                int computerTurn = 0;
-                if (turn == 0)
-                {
-                    while (computerTurn == 0)
-                    {
-                        // здесь пользователь выбирает карту
-                        // и помещает её на стол
-                        tableCards.Add(playerCards[0]);
-                        computerTurn = ComputerLogic(); // здесь будет вызываться метод Defense
-                    }
-                }
-                else
-                {
-                    if (ComputerLogic() == 1) // здесь будет вызываться метод Attack
-                    {
-                        computerCards.AddRange(tableCards);
-                        tableCards.Clear();
-                        
-                    }
-                    // здесь игрок выбирает карту, чтобы отбиться
+                    MessageBox.Show("Sorry, you lose.");
                 }
             }
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -250,7 +252,105 @@ namespace MyDurak
         private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DeckListInit();
-            GameProcess();
+            throwButton.Enabled = true;
+            getButton.Enabled = true;
+            bitoButton.Enabled = true;
+            //GameProcess();
+        }
+
+        private void throwButton_Click(object sender, EventArgs e)
+        {
+            WinnerCheck();
+            int myCard = (int)playerChoice.Value;
+            if (turn == 0) // если сейчас игрок атакует 
+            {
+                if (tableCards.Count == 0) // если на столе нет карт, то мы кладем любую
+                {
+                    //int myCard = (int)playerChoice.Value;
+                    if (playerCards.Contains(myCard))
+                    {
+                        tableCards.Add(myCard);
+                        playerCards.Remove(myCard);
+                        RefreshLabels();
+                        int a = ComputerLogic(); // будет вызван метод Defense
+                    }
+                }
+                else // если на столе есть карты, то мы кладем карту совпадающую по значению с теми, что на столе
+                {
+                    if (playerCards.Contains(myCard))
+                    {
+                        bool check = false;
+                        for (int i = 0; i < tableCards.Count; i++)
+                        {
+                            if ((myCard / 10) == (tableCards[i] / 10))
+                            {
+                                check = true;
+                            }
+                        }
+                        if (check)
+                        {
+                            tableCards.Add(myCard);
+                            playerCards.Remove(myCard);
+                            RefreshLabels();
+                            int a = ComputerLogic(); // будет вызван метод Defense
+                        }
+                    }
+                }
+            }
+            else // если игрок отбивается от карт противника
+            {
+                int enemyCard = tableCards[tableCards.Count - 1];
+                if (playerCards.Contains(myCard))
+                {
+                    if ((enemyCard % 10) != trump) // если последняя карта на столе не козырная
+                    {
+                        if (((enemyCard / 10) < (myCard / 10)) && 
+                            (((enemyCard % 10) == (myCard % 10)) || ((myCard % 10) == trump)))
+                        {
+                            tableCards.Add(myCard);
+                            playerCards.Remove(myCard);
+                            RefreshLabels();
+                            int a = ComputerLogic(); // здесь будет вызван метод Attack
+                        }
+                    }
+                    else // если последняя карта на столе козырная
+                    {
+                        if (((enemyCard / 10) < (myCard / 10)) && ((myCard % 10) == trump))
+                        {
+                            tableCards.Add(myCard);
+                            playerCards.Remove(myCard);
+                            RefreshLabels();
+                            int a = ComputerLogic(); // здесь будет вызван метод Attack
+                        }
+                    }
+                }
+            }
+        }
+
+        private void bitoButton_Click(object sender, EventArgs e)
+        {
+            WinnerCheck();
+            if ((turn == 0) && (tableCards.Count != 0))
+            {
+                tableCards.Clear();
+                GiveCard();
+                RefreshLabels();
+                turn = 1;
+                int a = ComputerLogic();
+            }
+        }
+
+        private void getButton_Click(object sender, EventArgs e)
+        {
+            WinnerCheck();
+            if (turn == 1)
+            {
+                playerCards.AddRange(tableCards);
+                tableCards.Clear();
+                GiveCard();
+                RefreshLabels();
+                int a = ComputerLogic();
+            }
         }
     }
 }

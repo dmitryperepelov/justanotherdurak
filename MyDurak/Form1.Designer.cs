@@ -51,8 +51,12 @@
             this.myCards = new System.Windows.Forms.Label();
             this.defDeck = new System.Windows.Forms.Label();
             this.giveDeck = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.table = new System.Windows.Forms.Label();
+            this.playerChoice = new System.Windows.Forms.NumericUpDown();
+            this.throwButton = new System.Windows.Forms.Button();
+            this.bitoButton = new System.Windows.Forms.Button();
+            this.getButton = new System.Windows.Forms.Button();
+            this.turnlbl = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -61,6 +65,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playerChoice)).BeginInit();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -241,13 +246,6 @@
             this.giveDeck.TabIndex = 14;
             this.giveDeck.Text = "Current deck:";
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(189, 493);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 22);
-            this.textBox1.TabIndex = 15;
-            // 
             // table
             // 
             this.table.AutoSize = true;
@@ -257,13 +255,69 @@
             this.table.TabIndex = 16;
             this.table.Text = "Table:";
             // 
+            // playerChoice
+            // 
+            this.playerChoice.Location = new System.Drawing.Point(202, 492);
+            this.playerChoice.Name = "playerChoice";
+            this.playerChoice.Size = new System.Drawing.Size(120, 22);
+            this.playerChoice.TabIndex = 18;
+            // 
+            // throwButton
+            // 
+            this.throwButton.AutoSize = true;
+            this.throwButton.Enabled = false;
+            this.throwButton.Location = new System.Drawing.Point(12, 492);
+            this.throwButton.Name = "throwButton";
+            this.throwButton.Size = new System.Drawing.Size(179, 27);
+            this.throwButton.TabIndex = 19;
+            this.throwButton.Text = "Что ты скажешь на это?";
+            this.throwButton.UseVisualStyleBackColor = true;
+            this.throwButton.Click += new System.EventHandler(this.throwButton_Click);
+            // 
+            // bitoButton
+            // 
+            this.bitoButton.AutoSize = true;
+            this.bitoButton.Enabled = false;
+            this.bitoButton.Location = new System.Drawing.Point(344, 492);
+            this.bitoButton.Name = "bitoButton";
+            this.bitoButton.Size = new System.Drawing.Size(87, 27);
+            this.bitoButton.TabIndex = 20;
+            this.bitoButton.Text = "Пока живи";
+            this.bitoButton.UseVisualStyleBackColor = true;
+            this.bitoButton.Click += new System.EventHandler(this.bitoButton_Click);
+            // 
+            // getButton
+            // 
+            this.getButton.AutoSize = true;
+            this.getButton.Enabled = false;
+            this.getButton.Location = new System.Drawing.Point(437, 492);
+            this.getButton.Name = "getButton";
+            this.getButton.Size = new System.Drawing.Size(159, 27);
+            this.getButton.TabIndex = 21;
+            this.getButton.Text = "Тебе просто повезло";
+            this.getButton.UseVisualStyleBackColor = true;
+            this.getButton.Click += new System.EventHandler(this.getButton_Click);
+            // 
+            // turnlbl
+            // 
+            this.turnlbl.AutoSize = true;
+            this.turnlbl.Location = new System.Drawing.Point(128, 99);
+            this.turnlbl.Name = "turnlbl";
+            this.turnlbl.Size = new System.Drawing.Size(42, 17);
+            this.turnlbl.TabIndex = 22;
+            this.turnlbl.Text = "Turn:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1202, 553);
+            this.Controls.Add(this.turnlbl);
+            this.Controls.Add(this.getButton);
+            this.Controls.Add(this.bitoButton);
+            this.Controls.Add(this.throwButton);
+            this.Controls.Add(this.playerChoice);
             this.Controls.Add(this.table);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.giveDeck);
             this.Controls.Add(this.defDeck);
             this.Controls.Add(this.myCards);
@@ -291,6 +345,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playerChoice)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,8 +375,12 @@
         private System.Windows.Forms.Label myCards;
         private System.Windows.Forms.Label defDeck;
         private System.Windows.Forms.Label giveDeck;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label table;
+        private System.Windows.Forms.NumericUpDown playerChoice;
+        private System.Windows.Forms.Button throwButton;
+        private System.Windows.Forms.Button bitoButton;
+        private System.Windows.Forms.Button getButton;
+        private System.Windows.Forms.Label turnlbl;
     }
 }
 
