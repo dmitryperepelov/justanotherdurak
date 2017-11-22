@@ -1,0 +1,10 @@
+c:\users\dmitry\desktop\MyDurak\MyDurak\bin\Debug\MyDurak.exe.config
+c:\users\dmitry\desktop\MyDurak\MyDurak\bin\Debug\MyDurak.exe
+c:\users\dmitry\desktop\MyDurak\MyDurak\bin\Debug\MyDurak.pdb
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.csprojResolveAssemblyReference.cache
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.Form1.resources
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.Properties.Resources.resources
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.csproj.GenerateResource.Cache
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.csproj.CoreCompileInputs.cache
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.exe
+c:\users\dmitry\desktop\MyDurak\MyDurak\obj\Debug\MyDurak.pdb
