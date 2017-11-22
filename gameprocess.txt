@@ -1,0 +1,48 @@
+public void GameProcess()
+        {
+            trumpLbl.Text = trumpLbl.Text + " " + trump.ToString();
+            int i = 0;
+            while (i < deckList.Count)
+            {
+                defDeck.Text = defDeck.Text + " " + deckList[i];
+                i++;
+            }
+            GiveCard(); // раздача карт в начале игры 
+            if ((deckList.Count != 0) && ((playerCards.Count != 0) || (computerCards.Count != 0)))
+            {
+                GiveCard(); // раздача карт по ходу игры 
+                cardCount.Text = "Cards in deck count: " + deckList.Count.ToString();
+                i = 0;
+                while (i < deckList.Count)
+                {
+                    giveDeck.Text = giveDeck.Text + " " + deckList[i];
+                    i++;
+                }
+                for (int j = 0; j < 6; j++)
+                {
+                    myCards.Text = myCards.Text + " " + playerCards[j].ToString();
+                    enemyCard.Text = enemyCard.Text + " " + computerCards[j].ToString();
+                }
+                turn = 1;
+                int computerTurn = 0;
+                if (turn == 0)
+                {
+                    while (computerTurn == 0)
+                    {
+                        // здесь пользователь выбирает карту
+                        // и помещает её на стол
+                        tableCards.Add(playerCards[0]);
+                        computerTurn = ComputerLogic(); // здесь будет вызываться метод Defense
+                    }
+                }
+                else
+                {
+                    while (ComputerLogic() != 1) // здесь будет вызываться метод Attack
+                    {
+                        tableCards.Add((int)playerChoice.Value);
+                        
+                    }
+                    // здесь игрок выбирает карту, чтобы отбиться
+                }
+            }
+        }
