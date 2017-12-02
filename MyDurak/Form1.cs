@@ -17,19 +17,19 @@ namespace MyDurak
             InitializeComponent();
         }
 
-        public List<int> playerCards = new List<int>();
+        public List<int> playerCards = new List<int>(); // карты игрока
 
-        public List<int> computerCards = new List<int>();
+        public List<int> computerCards = new List<int>(); // карты компьютера
 
-        public List<int> tableCards = new List<int>();
+        public List<int> tableCards = new List<int>(); // карты на столе
 
-        public List<int> deckList = new List<int>();
+        public List<int> deckList = new List<int>(); // карты в колоде
 
-        public int trump;
+        public int trump; // козырь
 
-        public int turn;
+        public int turn; // ход
 
-        public void RefreshLabels()
+        public void RefreshLabels() // метод для обновления содержимого лейблов
         {
             table.Text = "Table:";
             myCards.Text = "My cards:";
@@ -48,7 +48,7 @@ namespace MyDurak
             turnlbl.Text = turnlbl.Text + " " + turn;
         }
 
-        public void DeckListInit()
+        public void DeckListInit() // метод создает колоду карт, выбирпет козырь и чей будет первый ход
         {
             void ClearLabels()
             {
@@ -66,16 +66,16 @@ namespace MyDurak
             tableCards.Clear();
             ClearLabels();
             int[] deckArray = new int[36];
-            void Shuffle()
+            void Shuffle() // процедура для тоасования колоды
             {
-                void Swap(ref int first, ref int second)
+                void Swap(ref int first, ref int second) // велосипед
                 {
                     int temp = first;
                     first = second;
                     second = temp;
                 }
                 var randomValue = new Random();
-                for (int i = 35; i > 0; i--)
+                for (int i = 35; i > 0; i--) // тасование колоды методом Фтшера - Йейтса
                 {
                     int rnd = randomValue.Next(0, i);
                     Swap(ref deckArray[i], ref deckArray[rnd]);
@@ -100,74 +100,93 @@ namespace MyDurak
                 deckList.Add(deckArray[i]);
             }
             var newTrump = new Random();
-            trump = newTrump.Next(0, 3);
+            trump = newTrump.Next(0, 3); // выбор козыря
             var newTurn = new Random();
-            turn = 0;
+            turn = newTurn.Next(0, 2); // выбор первого игрока
             trumpLbl.Text = trumpLbl.Text + " " + trump;
             for (int i = 0; i < deckList.Count; i++)
                 defDeck.Text = defDeck.Text + " " + deckList[i];
             GiveCard();
             RefreshLabels();
+            if (turn == 1)
+            {
+                int a = ComputerLogic();
+            }
         }
 
-        public void GiveCard()
+        public void GiveCard() // метод выполняет раздачу карт игрокам
         {
-            while ((playerCards.Count < 6) && (deckList.Count > 0))
+            while ((playerCards.Count < 6) && (deckList.Count > 0)) // сдача карт игроку
             {
                 playerCards.Add(deckList[deckList.Count - 1]);
                 deckList.RemoveAt(deckList.Count - 1);
             }
-            while ((computerCards.Count < 6) && (deckList.Count > 0))
+            while ((computerCards.Count < 6) && (deckList.Count > 0)) // сдача карт компьютеру
             {
                 computerCards.Add(deckList[deckList.Count - 1]);
                 deckList.RemoveAt(deckList.Count - 1);
             }
         }
 
-        public int ComputerLogic()
+        public int ComputerLogic() // метод отвечает за логику компьютера
         {
-            int Attack()
+            int Attack() // процедура атаки, вызывается, когда turn = 1
             {
-                int minCard = computerCards[0];
-                if (tableCards.Count == 0) // выбирается карта для начала хода
+                if (computerCards.Count != 0) // если у компьютера есть карты
                 {
-                    for (int i = 1; i < computerCards.Count; i++) // в этом цикле определяется минимальная карта в руке компьютера
+                    int minCard = 99;
+                    if (tableCards.Count == 0) // выбирается карта для начала хода
                     {
-
-                        if (((computerCards[i] / 10) < (minCard / 10)) && ((computerCards[i] % 10) != trump))
+                        for (int i = 0; i < computerCards.Count; i++) // в этом цикле определяется минимальная карта в руке компьютера
                         {
-                            minCard = computerCards[i];
-                        }
-                    }
-                    table.Text = table.Text + minCard.ToString();
-                    tableCards.Add(minCard);
-                    computerCards.Remove(minCard);
-                    RefreshLabels();
-                    return 0;
-                }
-                else // выбираются катры для подкидывания
-                {
-                    for (int i = 0; i < tableCards.Count; i++)
-                    {
-                        for (int j = 0; j < computerCards.Count; j++)
-                        {
-                            if (((tableCards[i] / 10) == (computerCards[j] / 10)) && ((computerCards[j] % 10) != trump))
+                            if (((computerCards[i] / 10) < (minCard / 10)) && ((computerCards[i] % 10) != trump)) // компьютер ищет минимальную некозырную карту
                             {
-                                table.Text = table.Text + computerCards[j].ToString();
-                                tableCards.Add(computerCards[j]);
-                                computerCards.Remove(computerCards[j]);
-                                RefreshLabels();
-                                return 0;
+                                minCard = computerCards[i];
                             }
                         }
+                        if (minCard == 99) // если у компьютера только козыри
+                        {
+                            for (int i = 0; i < computerCards.Count; i++) // в этом цикле определяется минимальный козырь в руке компьютера
+                            {
+                                if (((computerCards[i] / 10) < (minCard / 10)))
+                                {
+                                    minCard = computerCards[i];
+                                }
+                            }
+                        }
+                        table.Text = table.Text + minCard.ToString();
+                        tableCards.Add(minCard);
+                        computerCards.Remove(minCard);
+                        RefreshLabels();
+                        return 0;
                     }
-                    RefreshLabels();
-                    turn = 0;
-                    return 1;
+                    else // выбираются катры для подкидывания
+                    {
+                        for (int i = 0; i < tableCards.Count; i++) // каждая карта на столе
+                        {
+                            for (int j = 0; j < computerCards.Count; j++) // сравнивается с картами в руке
+                            {
+                                if (((tableCards[i] / 10) == (computerCards[j] / 10)) && ((computerCards[j] % 10) != trump)) // если значения карт совпадают, она будет подброшенна
+                                {
+                                    table.Text = table.Text + computerCards[j].ToString();
+                                    tableCards.Add(computerCards[j]);
+                                    computerCards.Remove(computerCards[j]);
+                                    RefreshLabels();
+                                    return 0;
+                                }
+                            }
+                        }
+                        turn = 0;
+                        tableCards.Clear();
+                        GiveCard();
+                        RefreshLabels();
+                        return 1;
+                    }
                 }
+                return 1;
             }
 
-            int Defense()
+            int Defense() // процедура защиты, вызывается, когда turn = 0
             {
                 int minCard = 99;
                 if ((tableCards[tableCards.Count - 1] % 10) != trump) // если ИИ надо отбиваться от некозырной карты
@@ -205,7 +224,7 @@ namespace MyDurak
                 }
                 if (minCard != 99) // если ИИ нашел подходящую карту
                 {
-                    tableCards.Add(minCard);
+                    tableCards.Add(minCard); // кладет её на стол
                     table.Text = table.Text + " " + minCard.ToString();
                     computerCards.Remove(minCard);
                     RefreshLabels();
@@ -213,7 +232,7 @@ namespace MyDurak
                 }
                 else // если не нашел
                 {
-                    computerCards.AddRange(tableCards);
+                    computerCards.AddRange(tableCards); // забирает карты со стола
                     tableCards.Clear();
                     GiveCard();
                     RefreshLabels();
@@ -235,10 +254,12 @@ namespace MyDurak
                 if (playerCards.Count == 0)
                 {
                     MessageBox.Show("You win! Congratulation.");
+                    //Application.Exit(); // Сделать что-нибудь адекватное
                 }
                 if (computerCards.Count == 0)
                 {
                     MessageBox.Show("Sorry, you lose.");
+                    //Application.Exit();
                 }
             }
         }
@@ -262,6 +283,7 @@ namespace MyDurak
         {
             WinnerCheck();
             int myCard = (int)playerChoice.Value;
+            RefreshLabels();
             if (turn == 0) // если сейчас игрок атакует 
             {
                 if (tableCards.Count == 0) // если на столе нет карт, то мы кладем любую
@@ -305,7 +327,7 @@ namespace MyDurak
                     if ((enemyCard % 10) != trump) // если последняя карта на столе не козырная
                     {
                         if (((enemyCard / 10) < (myCard / 10)) && 
-                            (((enemyCard % 10) == (myCard % 10)) || ((myCard % 10) == trump)))
+                            ((enemyCard % 10) == (myCard % 10)) || ((myCard % 10) == trump))
                         {
                             tableCards.Add(myCard);
                             playerCards.Remove(myCard);
